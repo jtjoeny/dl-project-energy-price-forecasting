@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Apr  1 11:23:40 2021
-
-@author: jamie
-"""
 #Import required modules
 import pandas as pd
 from datetime import datetime
@@ -35,6 +30,9 @@ from sklearn.preprocessing import StandardScaler
 import keras.backend as K
 import tensorflow as tf
 import kerastuner as kt
+import matplotlib.dates as mdates
+
+from sklearn.metrics import mean_squared_error
 
 #%%
 
@@ -44,6 +42,13 @@ df = pd.read_csv('brussels_dataset.csv')
 date_time_key = 'Date'
 #df.set_index('Date', inplace=True)
 features = pd.DataFrame(df[['Prices', 'sunHour', 'cloudcover','humidity', 'tempC', 'windspeedKmph']])
+featplot =  df[['Date','Prices', 'sunHour', 'cloudcover','humidity', 'tempC', 'windspeedKmph']]
+
+prices = df[['Prices']]
+tempc = df[['tempC']]
+#%%
+plt.plot(prices[44554:52415], label = 'Historical day-ahead prices EPEX-BE during described test period')
+plt.legend()
 #%% split to train, validation and test data
 
 total_data_size = len(features)
@@ -203,22 +208,10 @@ def model_builder(hp):
               )
 
     return model_opt
+
 #%%
 my_dir = "C:\Programming\Environments\dl_project_1\data"
 
-# tuner = kt.BayesianOptimization(model_builder,
-#                       objective='val_accuracy',
-#                       directory= my_dir,
-#                       project_name = 'dl_energy_price2',
-#                       max_trials = 10)
-
-# tuner = kt.RandomSearch(
-#     model_builder,
-#     objective="val_accuracy",
-#     max_trials=40,
-#     project_name="hypertpoging2",
-#     directory=my_dir,
-# )
 
 tuner = kt.Hyperband(model_builder,
                      objective='val_mean_absolute_error',
@@ -265,20 +258,72 @@ print('Best epoch: %d' % (best_epoch,))
 
 #%%
 
-modeltuned2 = tuner.hypermodel.build(best_hps)
+modeltuned12 = tuner.hypermodel.build(best_hps)
 
 # Retrain the model
-modeltuned2.fit(trainX, trainY, epochs=best_epoch, validation_data = (valX, valY))
+modeltuned12.fit(trainX, trainY, epochs=best_epoch, validation_data = (valX, valY))
 #%%
-# Best val_mean_absolute_error So Far: 0.003508239984512329
-# Total elapsed time: 00h 37m 14s
+modeltuned32 = tuner.hypermodel.build(best_hps)
+modeltuned32.fit(trainX, trainY, epochs = 32, validation_data = (valX,valY))
+#%%
+eval_result = modeltuned12.evaluate(testX, testY)
+print("[test loss, test accuracy]:", eval_result)
+#%%
+eval_result32 = modeltuned32.evaluate(testX, testY)
+print("[test loss, test accuracy]:", eval_result32)
+#%%
+ypred12 = modeltuned12.predict(testX)
+ypred32 = modeltuned32.predict(testX)
+#%%
 
-# Search: Running Trial #10
+plt.plot(ypred32, label = 'pred32')
+plt.plot(ypred12, label = 'pred12')
+plt.plot(testY, label = 'actual')
+plt.legend()
 
-# Hyperparameter    |Value             |Best Value So Far 
-# units             |64                |384               
-# learning_rate     |0.001             |0.001             
-# tuner/epochs      |2                 |2                 
-# tuner/initial_e...|0                 |0                 
-# tuner/bracket     |2                 |2                 
-# tuner/round       |0                 |0      
+#%% Quantile loss or tilted loss function
+import tensorflow as tf
+
+def tilted_loss(q,y,f):
+    e = (y-f)
+    tf.autograph.experimental.do_not_convert
+    return K.mean(K.maximum(q*e, (q-1)*e), axis=-1)
+#%% Generation of quantile plot. 
+
+qs = [0.01, 0.05, 0.1, 0.25, 0.75, 0.9, 0.95, 0.99]
+# qs = [0.1, 0.5, 0.9]
+fitted_models = []
+
+for q in qs:
+    qmodel = modeltuned32
+    qmodel.compile(loss=lambda y,f: tilted_loss(q,y,f), optimizer='adadelta')
+    fit = qmodel.fit(trainX, trainY, epochs=5, batch_size=64, verbose=1)
+    fitted_models.append(fit)
+    qmodel.save_weights('model'+str(q)+'.h5')
+    
+    # Predict the quantile
+    y_test = qmodel.predict(testX[0:7*24])
+    plt.plot(y_test, label=q) # plot out this quantile
+#%%
+
+plt.plot(testY[0:7*24], label = 'actual price', c='b', linewidth = 5.0)
+plt.legend()
+#%% Inversing actual price and predicted price.
+
+forecast_copies = np.repeat(ypred32, features.shape[1], axis=-1)
+actual_copies = np.repeat(testY, features.shape[1], axis =-1)
+
+y_pred_future = scaler.inverse_transform(forecast_copies)[:,0]
+y_actual = scaler.inverse_transform(actual_copies)[:,0]
+#%% RMSE calculation
+def root_mean_squared_error(y_true, y_pred):
+        return np.sqrt(np.mean(np.square(y_pred - y_true))) 
+    
+    #%%
+rmse = np.sqrt(mean_squared_error(y_pred_future, y_actual))
+print('Test RMSE: %.3f' % rmse)
+
+#%%
+plt.plot(y_pred_future[0:7*24], label = 'price prediction')
+plt.plot(y_actual[0:7*24], label = 'actual price')
+plt.legend()
