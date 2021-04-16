@@ -74,6 +74,10 @@ The quantiles plot including the actual price is produced for the first 7 days o
 
 ![quantiles_plot_normalized](https://user-images.githubusercontent.com/36470382/115026707-1995ef80-9ec3-11eb-8251-bbdd977fb405.png)
 
+In terms of a single line price prediction, the model performed pretty good on the same period as the quantile plot shows. For this plot, the actual price and price prediction are scaled back to the original scale.
+
+![price_prediction_plot_invscaled](https://user-images.githubusercontent.com/36470382/115028849-a04bcc00-9ec5-11eb-8f73-5071031b88ca.png)
+
 # Conclusion
 I'm positive about the results I produced in this project. A more precise reproduction of the paper would have been possible if more details were present in the paper (and if my DL skills improved even more ;) ). However, given the limited amount of information, scope of time and my limited experience with deep learning, I find it quite amazing what can be achieved: quite a good model predicting the day-ahead prices of the Belgian energy market.
 
