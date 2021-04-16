@@ -71,3 +71,5 @@ The optimal amount of epochs to fit the model with was searched for two times. F
 Now I have explained how I prepared the data, set up the model and how I selected the hyperparameters, it is time to talk about the results produced by the model.  The model is able to predict a price 24 hours ahead or to predict quantiles 24 hours ahead. 
 
 The quantiles plot including the actual price is produced for the first 7 days of the test data period (08-02-2016 10h00 until 15-02-2016 10h00). Note that the graph included shows the quantiles and actual price for the normalized data.
+
+<img src="/docs/logo.png" alt="8 quantiles and the actual price line"/>
