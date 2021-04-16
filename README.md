@@ -74,4 +74,12 @@ The quantiles plot including the actual price is produced for the first 7 days o
 
 ![quantiles_plot_normalized](https://user-images.githubusercontent.com/36470382/115026707-1995ef80-9ec3-11eb-8251-bbdd977fb405.png)
 
+# Conclusion
+I'm positive about the results I produced in this project. A more precise reproduction of the paper would have been possible if more details were present in the paper (and if my DL skills improved even more ;) ). However, given the limited amount of information, scope of time and my limited experience with deep learning, I find it quite amazing what can be achieved: quite a good model predicting the day-ahead prices of the Belgian energy market.
 
+<ul>
+<li>If the paper's models were replicated until the exact same depth (amongst others: including the copula strategy/algorithm), possible the results would have been even better! However, it is encouraging to see how flexible the DL strategies learned in the course are and how relatively fast good results can be achieved.</li>
+<li>Although I did some hyperparameter tuning, more model variations could improve the model performance. I choose just to include a combination of a single bi-LSTM layer and a dense layer. However, other research showed that good or even better results might be achievable by using stacked LSTM layers. </li>
+<li>The paper uses a combination of multiple forecasting models, were first some predictions of the energy generation (by wind, PV) are used as input to the price prediction model. This is definitely an achievable and realistic model to build, however, I chose not to implement these steps as I was afraid to make the project too complicated which would increase the training times. All the results I have are achieved by my quad core CPU Dell laptop which gave some more flexibility and room for error.</li>
+<li>Fourth item</li>
+</ul>
