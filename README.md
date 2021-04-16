@@ -7,8 +7,8 @@ Student ID: 		4400356*
 
 Reproduction of existing papers, especially those without code published, forms an important part of Deep Learning research. This blogpost will discuss the reproducibility of the paper "[Deep Learning-Based Multivariate Probabilistic Forecasting for Short-Term Scheduling in Power Markets](https://www.researchgate.net/publication/327635519_Deep_Learning-Based_Multivariate_Probabilistic_Forecasting_for_Short-Term_Scheduling_in_Power_Markets)"
 
-The goal of this project is to achieve a similar result as the paper shows in figure 6d
-![Figure 6d](https://pasteboard.co/JXrHL3l.png)
+The goal of this project is to achieve a similar result as the paper shows in ![figure 6d](https://user-images.githubusercontent.com/36470382/115026250-8f4d8b80-9ec2-11eb-8cbc-11d387713f1d.png)
+
 
 This graph shows a plot of quantiles for the day ahead price forecast and the actual price as a line.
 
@@ -72,5 +72,6 @@ Now I have explained how I prepared the data, set up the model and how I selecte
 
 The quantiles plot including the actual price is produced for the first 7 days of the test data period (08-02-2016 10h00 until 15-02-2016 10h00). Note that the graph included shows the quantiles and actual price for the normalized data.
 
-![quantiles_normalized](https://user-images.githubusercontent.com/36470382/115026122-675e2800-9ec2-11eb-8261-c767f591196c.png)
+![quantiles_plot_normalized](https://user-images.githubusercontent.com/36470382/115026707-1995ef80-9ec3-11eb-8251-bbdd977fb405.png)
+
 
