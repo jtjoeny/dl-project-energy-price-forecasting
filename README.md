@@ -28,16 +28,19 @@ Next, the historical energy prices are an important data source for this project
 ## Weather data from WorldWeatherOnline
 The weather data is taken from WorldWeatherOnline, through their API interface. The data is gathered from a Brussels weather station and includes temperature, cloud cover, wind speed, precipation and more. Including all the weather data seems a bit extensive, therefore, I made a selection of some features to include for this project. The selected weather features are 'sunHour', 'cloudcover', 'humidity', 'tempC' and 'windspeedKmph'. This means that some features are dropped, such as WindChill, FeelsLike temperature and more. If you want to contine on my work, it could be a good idea to try more variations of weather features as input, possibly reducing it to only 2 or 3 or increasing it to see its effect. 
 
+An example of a feature in this dataset is the temperature (Celsius):
+
+![tempCtestperiod](https://user-images.githubusercontent.com/36470382/115030519-77c4d180-9ec7-11eb-90de-371698386bba.png)
+
+
 ## Day-ahead price from ENTSOE
 The day-ahead price data is taken from the European Network of Transmission System Operators for Electricity (ENTSOE). The ENTSOE platform ensures a transparent energy market which contributes to competitivety and therefore ensures fair prices. For the Belgian market, or EPEX-BE, I use the historical day-ahead energy prices for the period of 09-01-2011 until 31-12-2016. In total, this consists of 52416 data points.
 
 The day-ahead price predictions are used by network operators and allows them to take a position in the market. Based on the expected offer and demand, the day-ahead energy market lets market participants commit to buy or sell elecrticity one day before the operating day. This helps to avoid price volatility and lets the market produce one financial settlement. The more accurate the price prediction of a market participant is, the more profit the participant can make in potential.
 The dataset I used was taken from the [epftoolbox] (https://github.com/jeslago/epftoolbox) project as it already did one preprocessing step: "the daylight saving times (DST) are pre-processed by interpolating the missing values in Spring and averaging the values corresponding to the duplicated time indices in Autumn".
 
+![day_ahead_hist](https://user-images.githubusercontent.com/36470382/115030541-801d0c80-9ec7-11eb-836a-9dfcbd17bff3.png)
 
-
->>Plot weather data
-> Plot energy prices
 
 ## Data preparation
 As the data is taken from two different sources, some cleaning and preparation had to be done. First I made sure both datasets (weather and energy prices) had timesteps with the same interval (hourly). Next, the columns with unused weather features were dropped in the weather dataset. The energy price dataset consists of data from the same period as the weather dataset and have daylight saving times pre-processed as described above. The datasets were checked to be from the same timezone and were merged based on their timestamp. Before training the model, all features were normalized with a MinMaxScaler.
