@@ -72,4 +72,5 @@ Now I have explained how I prepared the data, set up the model and how I selecte
 
 The quantiles plot including the actual price is produced for the first 7 days of the test data period (08-02-2016 10h00 until 15-02-2016 10h00). Note that the graph included shows the quantiles and actual price for the normalized data.
 
-<img src="/docs/logo.png" alt="8 quantiles and the actual price line"/>
+![quantiles_normalized](https://user-images.githubusercontent.com/36470382/115026122-675e2800-9ec2-11eb-8261-c767f591196c.png)
+
